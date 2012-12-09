@@ -1,2 +1,0 @@
-This is a alarm clock. It wakes you with a mp3 song from a sdcard.
-The at91sam7s-ek board is used. The vs1011 chip is used for decoding the mp3 signal.
