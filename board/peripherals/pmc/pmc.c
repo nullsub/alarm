@@ -33,8 +33,6 @@
 
 #include "pmc.h"
 #include <board.h>
-#include <utility/assert.h>
-#include <utility/trace.h>
 
 #ifdef CP15_PRESENT
 #include <cp15/cp15.h>
@@ -53,7 +51,7 @@
 //------------------------------------------------------------------------------
 void PMC_SetFastWakeUpInputs(unsigned int inputs)
 {
-    SANITY_CHECK((inputs & ~0xFF) == 0);
+    //SANITY_CHECK((inputs & ~0xFF) == 0);
     AT91C_BASE_PMC->PMC_FSMR = inputs;
 }
 
@@ -99,13 +97,14 @@ void PMC_DisableProcessorClock(void)
 //------------------------------------------------------------------------------
 void PMC_EnablePeripheral(unsigned int id)
 {
-    SANITY_CHECK(id < 32);
+    //SANITY_CHECK(id < 32);
 
     if ((AT91C_BASE_PMC->PMC_PCSR & (1 << id)) == (1 << id)) {
 
-        TRACE_INFO("PMC_EnablePeripheral: clock of peripheral"
+        /*TRACE_INFO("PMC_EnablePeripheral: clock of peripheral"
                    " %u is already enabled\n\r",
                    id);
+	*/
     }
     else {
 
@@ -121,13 +120,13 @@ void PMC_EnablePeripheral(unsigned int id)
 //------------------------------------------------------------------------------
 void PMC_DisablePeripheral(unsigned int id)
 {
-    SANITY_CHECK(id < 32);
+    //SANITY_CHECK(id < 32);
 
     if ((AT91C_BASE_PMC->PMC_PCSR & (1 << id)) != (1 << id)) {
 
-        TRACE_INFO("PMC_DisablePeripheral: clock of peripheral"
+        /*TRACE_INFO("PMC_DisablePeripheral: clock of peripheral"
                    " %u is not enabled\n\r",
-                   id);
+                   id);*/
     }
     else {
 
@@ -143,7 +142,7 @@ void PMC_EnableAllPeripherals(void)
 {
     AT91C_BASE_PMC->PMC_PCER = MASK_STATUS;
     while( (AT91C_BASE_PMC->PMC_PCSR & MASK_STATUS) != MASK_STATUS);
-    TRACE_INFO("Enable all periph clocks\n\r"); 
+  // TRACE_INFO("Enable all periph clocks\n\r"); 
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +153,7 @@ void PMC_DisableAllPeripherals(void)
 {
     AT91C_BASE_PMC->PMC_PCDR = MASK_STATUS;
     while((AT91C_BASE_PMC->PMC_PCSR & MASK_STATUS) != 0);
-    TRACE_INFO("Disable all periph clocks\n\r");
+    //TRACE_INFO("Disable all periph clocks\n\r");
 }
 
 //-----------------------------------------------------------------------------

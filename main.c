@@ -1,33 +1,7 @@
 #include "board.h"
-#include "uart.h"
 #include "pio/pio.h"
-
-#define Buffer_size 10
-#define DISPLAY_NR_PINS 14
-
-/// LED #0 pin definition (PA0).
-#define DISPLAY_PIN_0   {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_1   {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_2   {1 << 2, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_3   {1 << 3, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_4   {1 << 4, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_5   {1 << 5, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_6   {1 << 6, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_7   {1 << 7, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_8   {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_9   {1 << 9, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_10   {1 << 10, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_11   {1 << 11, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_12   {1 << 12, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PIN_13   {1 << 13, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-#define DISPLAY_PINS    DISPLAY_PIN_0, DISPLAY_PIN_1, DISPLAY_PIN_2, DISPLAY_PIN_3, DISPLAY_PIN_4, DISPLAY_PIN_5, DISPLAY_PIN_6, DISPLAY_PIN_7, DISPLAY_PIN_8, DISPLAY_PIN_9, DISPLAY_PIN_10, DISPLAY_PIN_11,  DISPLAY_PIN_12, DISPLAY_PIN_13 
-
-static const Pin display_pins[] = {DISPLAY_PINS};
-
-void init_display()
-{
-	PIO_Configure(display_pins, DISPLAY_NR_PINS);
-}
+#include "uart.h"
+#include "display.h"
 
 void device_init()
 {
@@ -45,15 +19,26 @@ void device_init()
 #define PONG_STEP 5
 
 int main(void) {
-	device_init();
-	init_display();
+	display_init();
+	unsigned int   loop_count ;
+	AT91PS_AIC     pAic;
+	//* Load System pAic Base address
+	pAic = AT91C_BASE_AIC;
 
-	PIO_Set(&display_pins[0]);
-	PIO_Clear(&display_pins[1]);
-	PIO_Clear(&display_pins[2]);
-	PIO_Set(&display_pins[3]);
+	//* Enable User Reset and set its minimal assertion to 960 us
+	AT91C_BASE_RSTC->RSTC_RMR = AT91C_RSTC_URSTEN | (0x4<<8) | (unsigned int)(0xA5<<24);
+
+	//* Init
+	loop_count = 0 ;
+	// First, enable the clock of the PIOB
+	AT91F_PMC_EnablePeriphClock ( AT91C_BASE_PMC, 1 << AT91C_ID_PIOA ) ;
+
+	// mt: added reset enable to make the board reset-button "useful"
+	AT91F_RSTSetMode( AT91C_BASE_RSTC , AT91C_RSTC_URSTEN );
+
+
 	while(1){
-
+		__asm("nop");
 	}
 }
 

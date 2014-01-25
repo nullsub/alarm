@@ -52,10 +52,14 @@ TARGET = alarm
 
 ## MAIN:
 SRC += main.c
+SRC += display.c
 SRC += uart.c
 SRC += board/Cstartup_SAM7.c
 SRC += board/led.c
 SRC += board/peripherals/pio/pio.c
+SRC += board/peripherals/pio/pio_it.c
+SRC += board/peripherals/pmc/pmc.c
+SRC += board/peripherals/aic/aic.c
 
 # List C source files here which must be compiled in ARM-Mode (no -mthumb).
 # use file-extension c for "c-only"-files
@@ -120,7 +124,7 @@ DEBUGF =
 # 0 = turn off optimization. s = optimize for size.
 # (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
 
-OPT = 0
+OPT = 2
 
 # Place project-specific -D and/or -U options for
 # Assembler with preprocessor here.

@@ -308,5 +308,7 @@ AT91F_Spurious_handler:
         .size   AT91F_Spurious_handler, . - AT91F_Spurious_handler
         .endfunc
 
+timer1_asm_irq_handler:
+		
 
 .end
